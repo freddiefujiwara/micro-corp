@@ -6,22 +6,53 @@
         <p class="subtitle">FIRE後の社会保険料シミュレーター</p>
       </div>
       <div class="header-actions">
-        <button @click="toggleTheme" class="theme-toggle">
-          {{ theme === 'light' ? '🌙 Dark' : '☀️ Light' }}
-        </button>
+        <div class="header-buttons">
+          <a href="/micro-corp/" class="theme-toggle reset-link">リセット</a>
+          <button @click="toggleTheme" class="theme-toggle">
+            {{ theme === 'light' ? '🌙 Dark' : '☀️ Light' }}
+          </button>
+          <button @click="toggleMosaic" class="theme-toggle">
+            {{ isMosaic ? '金額表示' : '金額モザイク' }}
+          </button>
+          <button @click="openShareDialog" class="theme-toggle">共有する</button>
+        </div>
       </div>
     </header>
 
+    <div v-if="isShareDialogOpen" class="share-dialog-backdrop" @click.self="closeShareDialog">
+      <section class="share-dialog" role="dialog" aria-modal="true" aria-labelledby="share-dialog-title">
+        <h2 id="share-dialog-title">共有前の確認</h2>
+        <p>
+          この共有では、現在画面に入力されている<strong>入力値</strong>と、そこから算出された<strong>計算結果</strong>がすべて含まれます。
+        </p>
+        <p>
+          資産状況は機密性の高い情報です。共有先は、信頼できる家族や友人のみに留めてください。
+        </p>
+        <p>
+          共有URLは、ブラウザのブックマーク等に保存することで、現在の計算結果を後から参照・保存できます。
+        </p>
+        <div class="share-dialog-actions">
+          <button class="theme-toggle" type="button" @click="closeShareDialog">
+キャンセル</button>
+          <button class="theme-toggle" type="button" @click="shareCurrentResult"
+>共有を続ける</button>
+        </div>
+      </section>
+    </div>
+    <div class="layout">
+      <p v-if="shareStatusMessage" class="share-status" role="status">{{ shareStatusMessage }}</p>
+    </div>
+
     <main class="layout">
       <div class="card-grid">
-        <InputForm v-model="params" />
+        <InputForm v-model="params" :is-mosaic="isMosaic" />
       </div>
 
       <Disclaimer />
 
       <div class="main-visualization">
         <div class="table-wrap">
-          <ResultDisplay :results="results" />
+          <ResultDisplay :results="results" :is-mosaic="isMosaic" />
         </div>
         <div class="chart-card">
           <OptimizationChart
@@ -51,6 +82,45 @@ import { encode, decode } from './domain/url.js';
 const route = useRoute();
 const router = useRouter();
 const theme = ref('dark');
+const isMosaic = ref(false);
+const isShareDialogOpen = ref(false);
+const shareStatusMessage = ref('');
+
+const toggleMosaic = () => {
+  isMosaic.value = !isMosaic.value;
+};
+
+const openShareDialog = () => {
+  shareStatusMessage.value = '';
+  isShareDialogOpen.value = true;
+};
+
+const closeShareDialog = () => {
+  isShareDialogOpen.value = false;
+};
+
+const shareCurrentResult = async () => {
+  const shareUrl = window.location.href;
+
+  try {
+    if (navigator.share) {
+      await navigator.share({
+        title: 'micro-corp Simulation',
+        text: 'FIRE後の社会保険料シミュレーター',
+        url: shareUrl,
+      });
+      shareStatusMessage.value = '共有ダイアログを開きました。';
+      closeShareDialog();
+      return;
+    }
+
+    await navigator.clipboard.writeText(shareUrl);
+    shareStatusMessage.value = '共有URLをコピーしました。';
+    closeShareDialog();
+  } catch {
+    shareStatusMessage.value = '共有またはコピーに失敗しました。時間をおいて再度お試しください。';
+  }
+};
 
 const toggleTheme = () => {
   theme.value = theme.value === 'light' ? 'dark' : 'light';
@@ -172,6 +242,14 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .header h1 {
@@ -187,18 +265,71 @@ body {
 }
 
 .theme-toggle {
-  background: var(--surface-elevated);
   border: 1px solid var(--border);
+  background: var(--surface-elevated);
   color: var(--text);
-  padding: 8px 16px;
   border-radius: 999px;
+  padding: 6px 12px;
+  font: inherit;
   cursor: pointer;
-  font-size: 0.9rem;
-  transition: background 0.2s;
+  transition: all 0.2s;
+  white-space: nowrap;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .theme-toggle:hover {
-  background: var(--border);
+  border-color: var(--primary);
+}
+
+.mosaic-blur,
+.mosaic-blur input {
+  filter: blur(6px);
+  user-select: none;
+  transition: filter 0.2s;
+}
+
+.share-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+  display: grid;
+  place-items: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.share-dialog {
+  width: min(560px, 100%);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.share-dialog h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.share-dialog p {
+  margin: 0 0 12px;
+}
+
+.share-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+.share-status {
+  margin: 16px 0;
+  color: var(--primary);
+  font-weight: 600;
 }
 
 .card-grid {

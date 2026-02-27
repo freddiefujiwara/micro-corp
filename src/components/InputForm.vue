@@ -10,19 +10,19 @@
         <label>扶養人数 (本人除く)</label>
         <input type="number" v-model="localParams.dependents" @input="update" />
       </div>
-      <div class="form-item">
+      <div class="form-item" :class="{ 'mosaic-blur': isMosaic }">
         <label>退職前給与 (月額)</label>
         <input type="number" v-model="localParams.previousSalary" @input="update" />
       </div>
-      <div class="form-item">
+      <div class="form-item" :class="{ 'mosaic-blur': isMosaic }">
         <label>課税所得 (年額)</label>
         <input type="number" v-model="localParams.taxableIncome" @input="update" />
       </div>
-      <div class="form-item">
+      <div class="form-item" :class="{ 'mosaic-blur': isMosaic }">
         <label>役員報酬 (月額)</label>
         <input type="number" v-model="localParams.monthlyRemuneration" @input="update" />
       </div>
-      <div class="form-item">
+      <div class="form-item" :class="{ 'mosaic-blur': isMosaic }">
         <label>法人固定費 (年額)</label>
         <input type="number" v-model="localParams.corporateFixedCost" @input="update" />
       </div>
@@ -33,7 +33,7 @@
 <script setup>
 import { reactive, watch } from 'vue';
 
-const props = defineProps(['modelValue']);
+const props = defineProps(['modelValue', 'isMosaic']);
 const emit = defineEmits(['update:modelValue']);
 
 const localParams = reactive({ ...props.modelValue });
