@@ -8,13 +8,13 @@
       <div class="header-actions">
         <div class="header-buttons">
           <a href="/micro-corp/" class="theme-toggle reset-link">リセット</a>
-          <button @click="toggleTheme" class="theme-toggle">
+          <BaseButton @click="toggleTheme">
             {{ theme === 'light' ? '🌙 Dark' : '☀️ Light' }}
-          </button>
-          <button @click="toggleMosaic" class="theme-toggle">
+          </BaseButton>
+          <BaseButton @click="toggleMosaic">
             {{ isMosaic ? '金額表示' : '金額モザイク' }}
-          </button>
-          <button @click="openShareDialog" class="theme-toggle">共有する</button>
+          </BaseButton>
+          <BaseButton @click="openShareDialog">共有する</BaseButton>
         </div>
       </div>
     </header>
@@ -32,13 +32,12 @@
           共有URLは、ブラウザのブックマーク等に保存することで、現在の計算結果を後から参照・保存できます。
         </p>
         <div class="share-dialog-actions">
-          <button class="theme-toggle" type="button" @click="closeShareDialog">
-キャンセル</button>
-          <button class="theme-toggle" type="button" @click="shareCurrentResult"
->共有を続ける</button>
+          <BaseButton @click="closeShareDialog">キャンセル</BaseButton>
+          <BaseButton @click="shareCurrentResult">共有を続ける</BaseButton>
         </div>
       </section>
     </div>
+
     <div class="layout">
       <p v-if="shareStatusMessage" class="share-status" role="status">{{ shareStatusMessage }}</p>
     </div>
@@ -55,10 +54,7 @@
           <ResultDisplay :results="results" :is-mosaic="isMosaic" />
         </div>
         <div class="chart-card">
-          <OptimizationChart
-            :data="optimizationData"
-            @update:salary="(val) => params.monthlyRemuneration = val"
-          />
+          <OptimizationChart :data="optimizationData" @update:salary="updateSalary" />
         </div>
       </div>
     </main>
@@ -70,119 +66,36 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch, onUnmounted } from 'vue';
+import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import InputForm from './components/InputForm.vue';
 import ResultDisplay from './components/ResultDisplay.vue';
 import Disclaimer from './components/Disclaimer.vue';
 import OptimizationChart from './components/OptimizationChart.vue';
-import { runSimulation, getOptimizationData } from './domain/scenario-engine.js';
-import { encode, decode } from './domain/url.js';
+import BaseButton from './components/atoms/BaseButton.vue';
+import { useAppTheme } from './composables/useAppTheme.js';
+import { useShareActions } from './composables/useShareActions.js';
+import { useSimulation } from './composables/useSimulation.js';
 
 const route = useRoute();
 const router = useRouter();
-const theme = ref('dark');
+
+const { theme, toggleTheme } = useAppTheme();
+const { params, results, optimizationData } = useSimulation(route, router);
+const { isShareDialogOpen, shareStatusMessage, openShareDialog, closeShareDialog, shareCurrentResult } = useShareActions();
+
 const isMosaic = ref(false);
-const isShareDialogOpen = ref(false);
-const shareStatusMessage = ref('');
 
 const toggleMosaic = () => {
   isMosaic.value = !isMosaic.value;
 };
 
-const openShareDialog = () => {
-  shareStatusMessage.value = '';
-  isShareDialogOpen.value = true;
+const updateSalary = (salary) => {
+  params.value = {
+    ...params.value,
+    monthlyRemuneration: salary,
+  };
 };
-
-const closeShareDialog = () => {
-  isShareDialogOpen.value = false;
-};
-
-const shareCurrentResult = async () => {
-  const shareUrl = window.location.href;
-
-  try {
-    if (navigator.share) {
-      await navigator.share({
-        title: 'micro-corp Simulation',
-        text: 'FIRE後の社会保険料シミュレーター',
-        url: shareUrl,
-      });
-      shareStatusMessage.value = '共有ダイアログを開きました。';
-      closeShareDialog();
-      return;
-    }
-
-    await navigator.clipboard.writeText(shareUrl);
-    shareStatusMessage.value = '共有URLをコピーしました。';
-    closeShareDialog();
-  } catch {
-    shareStatusMessage.value = '共有またはコピーに失敗しました。時間をおいて再度お試しください。';
-  }
-};
-
-const toggleTheme = () => {
-  theme.value = theme.value === 'light' ? 'dark' : 'light';
-  localStorage.setItem('theme', theme.value);
-  document.documentElement.setAttribute('data-theme', theme.value);
-};
-
-onMounted(() => {
-  const savedTheme = localStorage.getItem('theme');
-  if (savedTheme) {
-    theme.value = savedTheme;
-  } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
-    theme.value = 'light';
-  }
-  document.documentElement.setAttribute('data-theme', theme.value);
-
-  // Restore state from URL if token exists
-  const initialToken = route.params.token;
-  if (initialToken) {
-    const decoded = decode(initialToken);
-    if (decoded) {
-      params.value = { ...params.value, ...decoded };
-    }
-  }
-});
-
-// Watch for route changes to sync state (e.g. back/forward button)
-watch(() => route.params.token, (newToken) => {
-  if (newToken) {
-    const decoded = decode(newToken);
-    if (decoded) {
-      // Avoid infinite loop by checking if params are actually different
-      const currentToken = encode(params.value);
-      if (newToken !== currentToken) {
-        params.value = { ...params.value, ...decoded };
-      }
-    }
-  }
-});
-
-const params = ref({
-  birthYear: 1985,
-  dependents: 0,
-  previousSalary: 400000,
-  taxableIncome: 2000000,
-  monthlyRemuneration: 100000,
-  corporateFixedCost: 70000
-});
-
-// Update URL when params change
-watch(params, (newParams) => {
-  const token = encode(newParams);
-  router.replace({ name: 'home', params: { token } });
-}, { deep: true });
-
-const results = computed(() => {
-  return runSimulation(params.value);
-});
-
-const optimizationData = computed(() => {
-  return getOptimizationData(params.value, 45000, 250000, 5000);
-});
 </script>
 
 <style>
