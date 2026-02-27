@@ -11,12 +11,14 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
-    "vue": "^3.4.21"
+    "lz-string": "^1.5.0",
+    "vue": "^3.4.21",
+    "vue-router": "^4.6.4"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",
+    "gh-pages": "^6.1.1",
     "vite": "^5.2.0",
-    "vitest": "^1.4.0",
-    "gh-pages": "^6.1.1"
+    "vitest": "^1.4.0"
   }
 }

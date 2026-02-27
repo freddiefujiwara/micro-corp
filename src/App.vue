@@ -36,18 +36,23 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch, onUnmounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import InputForm from './components/InputForm.vue';
 import ResultDisplay from './components/ResultDisplay.vue';
 import Disclaimer from './components/Disclaimer.vue';
 import OptimizationChart from './components/OptimizationChart.vue';
 import { runSimulation, getOptimizationData } from './domain/scenario-engine.js';
+import { encode, decode } from './domain/url.js';
 
+const route = useRoute();
+const router = useRouter();
 const theme = ref('dark');
 
 const toggleTheme = () => {
   theme.value = theme.value === 'light' ? 'dark' : 'light';
   localStorage.setItem('theme', theme.value);
+  document.documentElement.setAttribute('data-theme', theme.value);
 };
 
 onMounted(() => {
@@ -56,6 +61,30 @@ onMounted(() => {
     theme.value = savedTheme;
   } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
     theme.value = 'light';
+  }
+  document.documentElement.setAttribute('data-theme', theme.value);
+
+  // Restore state from URL if token exists
+  const initialToken = route.params.token;
+  if (initialToken) {
+    const decoded = decode(initialToken);
+    if (decoded) {
+      params.value = { ...params.value, ...decoded };
+    }
+  }
+});
+
+// Watch for route changes to sync state (e.g. back/forward button)
+watch(() => route.params.token, (newToken) => {
+  if (newToken) {
+    const decoded = decode(newToken);
+    if (decoded) {
+      // Avoid infinite loop by checking if params are actually different
+      const currentToken = encode(params.value);
+      if (newToken !== currentToken) {
+        params.value = { ...params.value, ...decoded };
+      }
+    }
   }
 });
 
@@ -67,6 +96,12 @@ const params = ref({
   monthlyRemuneration: 100000,
   corporateFixedCost: 70000
 });
+
+// Update URL when params change
+watch(params, (newParams) => {
+  const token = encode(newParams);
+  router.replace({ name: 'home', params: { token } });
+}, { deep: true });
 
 const results = computed(() => {
   return runSimulation(params.value);
@@ -94,7 +129,7 @@ const optimizationData = computed(() => {
   --link: #93c5fd;
 }
 
-[data-theme='light'] {
+:root[data-theme='light'] {
   --bg: #f8fafc;
   --text: #1f2937;
   --muted: #64748b;
