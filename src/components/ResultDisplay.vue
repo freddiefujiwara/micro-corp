@@ -16,11 +16,11 @@
         <tbody>
           <tr v-for="res in results" :key="res.name">
             <td class="scenario-name">{{ res.name }}</td>
-            <td class="amount">{{ formatCurrency(res.healthInsurance) }}</td>
-            <td class="amount">{{ formatCurrency(res.pension) }}</td>
-            <td class="amount">{{ formatCurrency(res.corporateHealthInsurance + res.corporatePension) }}</td>
-            <td class="amount">{{ formatCurrency(res.corporateFixedCost) }}</td>
-            <td class="total-cell amount">{{ formatCurrency(res.totalCost) }}</td>
+            <td class="amount" :class="{ 'mosaic-blur': isMosaic }">{{ formatCurrency(res.healthInsurance) }}</td>
+            <td class="amount" :class="{ 'mosaic-blur': isMosaic }">{{ formatCurrency(res.pension) }}</td>
+            <td class="amount" :class="{ 'mosaic-blur': isMosaic }">{{ formatCurrency(res.corporateHealthInsurance + res.corporatePension) }}</td>
+            <td class="amount" :class="{ 'mosaic-blur': isMosaic }">{{ formatCurrency(res.corporateFixedCost) }}</td>
+            <td class="total-cell amount" :class="{ 'mosaic-blur': isMosaic }">{{ formatCurrency(res.totalCost) }}</td>
           </tr>
         </tbody>
       </table>
@@ -29,7 +29,7 @@
 </template>
 
 <script setup>
-const props = defineProps(['results']);
+const props = defineProps(['results', 'isMosaic']);
 
 const formatCurrency = (val) => {
   return new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(val);
@@ -81,5 +81,10 @@ td {
   background: color-mix(in oklab, var(--primary), transparent 90%);
   color: var(--primary);
   font-weight: 700;
+}
+.mosaic-blur {
+  filter: blur(6px);
+  user-select: none;
+  transition: filter 0.2s;
 }
 </style>
