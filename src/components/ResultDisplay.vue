@@ -1,7 +1,7 @@
 <template>
   <div class="result-display">
-    <h2>シミュレーション結果 (年間総コスト)</h2>
-    <div class="table-container">
+    <h3 class="section-title">シミュレーション結果 (年間総コスト)</h3>
+    <div class="table-wrap">
       <table>
         <thead>
           <tr>
@@ -10,17 +10,17 @@
             <th>年金</th>
             <th>法人負担分</th>
             <th>法人固定費</th>
-            <th>合計</th>
+            <th class="total-header">合計</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="res in results" :key="res.name">
-            <td>{{ res.name }}</td>
-            <td>{{ formatCurrency(res.healthInsurance) }}</td>
-            <td>{{ formatCurrency(res.pension) }}</td>
-            <td>{{ formatCurrency(res.corporateHealthInsurance + res.corporatePension) }}</td>
-            <td>{{ formatCurrency(res.corporateFixedCost) }}</td>
-            <td class="total-cell">{{ formatCurrency(res.totalCost) }}</td>
+            <td class="scenario-name">{{ res.name }}</td>
+            <td class="amount">{{ formatCurrency(res.healthInsurance) }}</td>
+            <td class="amount">{{ formatCurrency(res.pension) }}</td>
+            <td class="amount">{{ formatCurrency(res.corporateHealthInsurance + res.corporatePension) }}</td>
+            <td class="amount">{{ formatCurrency(res.corporateFixedCost) }}</td>
+            <td class="total-cell amount">{{ formatCurrency(res.totalCost) }}</td>
           </tr>
         </tbody>
       </table>
@@ -38,25 +38,48 @@ const formatCurrency = (val) => {
 
 <style scoped>
 .result-display {
-  margin-top: 2rem;
+  margin-bottom: 24px;
 }
-.table-container {
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+.table-wrap {
   overflow-x: auto;
 }
 table {
   width: 100%;
   border-collapse: collapse;
-}
-th, td {
-  border: 1px solid #ddd;
-  padding: 0.75rem;
-  text-align: right;
+  font-size: 0.9rem;
 }
 th {
-  background-color: #f2f2f2;
+  background: var(--surface-elevated);
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  padding: 12px;
+  color: var(--muted);
+  font-weight: 600;
+  white-space: nowrap;
 }
-.total-cell {
-  font-weight: bold;
-  color: #d9534f;
+td {
+  border-bottom: 1px solid var(--border);
+  padding: 12px;
+  white-space: nowrap;
+}
+.scenario-name {
+  font-weight: 600;
+  color: var(--text);
+}
+.amount {
+  text-align: right;
+  font-family: 'Inter', monospace;
+  font-weight: 600;
+}
+.total-header, .total-cell {
+  background: color-mix(in oklab, var(--primary), transparent 90%);
+  color: var(--primary);
+  font-weight: 700;
 }
 </style>
