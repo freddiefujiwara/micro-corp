@@ -16,11 +16,11 @@
         <tbody>
           <tr v-for="res in results" :key="res.name">
             <td class="scenario-name">{{ res.name }}</td>
-            <td class="amount" :class="{ 'mosaic-blur': isMosaic }">{{ formatCurrency(res.healthInsurance) }}</td>
-            <td class="amount" :class="{ 'mosaic-blur': isMosaic }">{{ formatCurrency(res.pension) }}</td>
-            <td class="amount" :class="{ 'mosaic-blur': isMosaic }">{{ formatCurrency(res.corporateHealthInsurance + res.corporatePension) }}</td>
-            <td class="amount" :class="{ 'mosaic-blur': isMosaic }">{{ formatCurrency(res.corporateFixedCost) }}</td>
-            <td class="total-cell amount" :class="{ 'mosaic-blur': isMosaic }">{{ formatCurrency(res.totalCost) }}</td>
+            <td class="amount" :class="{ 'mosaic-blur': isMosaic }">{{ formatYen(res.healthInsurance) }}</td>
+            <td class="amount" :class="{ 'mosaic-blur': isMosaic }">{{ formatYen(res.pension) }}</td>
+            <td class="amount" :class="{ 'mosaic-blur': isMosaic }">{{ formatYen(res.corporateHealthInsurance + res.corporatePension) }}</td>
+            <td class="amount" :class="{ 'mosaic-blur': isMosaic }">{{ formatYen(res.corporateFixedCost) }}</td>
+            <td class="total-cell amount" :class="{ 'mosaic-blur': isMosaic }">{{ formatYen(res.totalCost) }}</td>
           </tr>
         </tbody>
       </table>
@@ -29,11 +29,18 @@
 </template>
 
 <script setup>
-const props = defineProps(['results', 'isMosaic']);
+import { formatYen } from '../utils/formatters.js';
 
-const formatCurrency = (val) => {
-  return new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY' }).format(val);
-};
+defineProps({
+  results: {
+    type: Array,
+    required: true,
+  },
+  isMosaic: {
+    type: Boolean,
+    default: false,
+  },
+});
 </script>
 
 <style scoped>
