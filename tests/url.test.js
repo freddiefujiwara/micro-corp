@@ -1,5 +1,10 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
+import LZString from 'lz-string';
 import { encode, decode } from '../src/domain/url.js';
+
+afterEach(() => {
+  vi.restoreAllMocks();
+});
 
 describe('URL persistence logic', () => {
   const sampleParams = {
@@ -21,23 +26,38 @@ describe('URL persistence logic', () => {
   });
 
   it('handles empty or null values safely', () => {
-    expect(encode(null)).toBe("");
+    expect(encode(null)).toBe('');
     expect(decode(null)).toBeNull();
-    expect(decode("")).toBeNull();
+    expect(decode('')).toBeNull();
   });
 
   it('handles invalid encoded strings safely', () => {
-    // Some random non-lz string
-    expect(decode("invalid-token-!@#$%")).toBeNull();
+    expect(decode('invalid-token-!@#$%')).toBeNull();
   });
 
-  it('normalizes underscores back to plus signs for LZString compatibility', () => {
-    // The encode function replaces + with _
+  it('normalizes spaces and underscores back to plus signs', () => {
     const obj = { a: 1 };
     const encoded = encode(obj);
-    if (encoded.includes('_')) {
-        const decoded = decode(encoded);
-        expect(decoded).toEqual(obj);
-    }
+
+    const decodedFromUnderscore = decode(encoded.replace(/\+/g, '_'));
+    const decodedFromSpace = decode(encoded.replace(/_/g, ' '));
+
+    expect(decodedFromUnderscore).toEqual(obj);
+    expect(decodedFromSpace).toEqual(obj);
+  });
+
+  it('normalizes %20 back to plus signs', () => {
+    const obj = { a: 1, b: 'text' };
+    const encoded = LZString.compressToEncodedURIComponent(JSON.stringify(obj));
+    const converted = encoded.replace(/\+/g, '%20');
+    expect(decode(converted)).toEqual(obj);
+  });
+
+  it('returns null and logs error when JSON parsing fails', () => {
+    const invalidJsonPayload = LZString.compressToEncodedURIComponent('{invalid-json}');
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    expect(decode(invalidJsonPayload)).toBeNull();
+    expect(spy).toHaveBeenCalled();
   });
 });
