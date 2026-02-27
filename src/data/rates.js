@@ -65,6 +65,21 @@ export const REMUNERATION_TABLE = [
   { level: 33, min: 575000,   max: 605000,   health: 590000,  pension: 590000 },
   { level: 34, min: 605000,   max: 635000,   health: 620000,  pension: 620000 },
   { level: 35, min: 635000,   max: 665000,   health: 650000,  pension: 650000 },
+  { level: 36, min: 665000,   max: 695000,   health: 680000,  pension: 650000 },
+  { level: 37, min: 695000,   max: 730000,   health: 710000,  pension: 650000 },
+  { level: 38, min: 730000,   max: 770000,   health: 750000,  pension: 650000 },
+  { level: 39, min: 770000,   max: 810000,   health: 790000,  pension: 650000 },
+  { level: 40, min: 810000,   max: 855000,   health: 830000,  pension: 650000 },
+  { level: 41, min: 855000,   max: 905000,   health: 880000,  pension: 650000 },
+  { level: 42, min: 905000,   max: 955000,   health: 930000,  pension: 650000 },
+  { level: 43, min: 955000,   max: 1005000,  health: 980000,  pension: 650000 },
+  { level: 44, min: 1005000,  max: 1055000,  health: 1030000, pension: 650000 },
+  { level: 45, min: 1055000,  max: 1115000,  health: 1090000, pension: 650000 },
+  { level: 46, min: 1115000,  max: 1175000,  health: 1150000, pension: 650000 },
+  { level: 47, min: 1175000,  max: 1235000,  health: 1210000, pension: 650000 },
+  { level: 48, min: 1235000,  max: 1295000,  health: 1270000, pension: 650000 },
+  { level: 49, min: 1295000,  max: 1355000,  health: 1330000, pension: 650000 },
+  { level: 50, min: 1355000,  max: 9999999,  health: 1390000, pension: 650000 },
 ];
 
 export const MAX_HEALTH_REMUNERATION = 1390000;

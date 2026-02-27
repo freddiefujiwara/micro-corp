@@ -93,10 +93,17 @@ export function getOptimizationData(params, minRemuneration = 45000, maxRemunera
     const microHealth = calculateKyokaiKenpo(salary, includeNursing);
     const microPension = calculateKoseiNenkin(salary);
 
-    const total = (microHealth.total + microPension.total) * 12 + params.corporateFixedCost;
+    const health = microHealth.total * 12;
+    const pension = microPension.total * 12;
+    const total = health + pension + params.corporateFixedCost;
     data.push({
       salary,
-      totalCost: total
+      totalCost: total,
+      breakdown: {
+        health,
+        pension,
+        fixed: params.corporateFixedCost
+      }
     });
   }
   return data;

@@ -24,7 +24,10 @@
           <ResultDisplay :results="results" />
         </div>
         <div class="chart-card">
-          <OptimizationChart :data="optimizationData" />
+          <OptimizationChart
+            :data="optimizationData"
+            @update:salary="(val) => params.monthlyRemuneration = val"
+          />
         </div>
       </div>
     </main>

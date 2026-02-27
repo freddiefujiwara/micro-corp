@@ -28,10 +28,9 @@ describe('Health Insurance Calculations', () => {
   });
 
   it('handles maximum health insurance bracket', () => {
-    // Current table in rates.js ends at 665,000 max.
-    // If we input 1M, it should return the highest health remuneration in the table (650,000)
-    // or the absolute MAX_HEALTH_REMUNERATION if it hits the upper bound.
-    expect(getHealthStandardRemuneration(1000000)).toBe(650000);
+    // Now the table includes higher brackets up to 1.39M
+    expect(getHealthStandardRemuneration(1000000)).toBe(980000);
+    expect(getHealthStandardRemuneration(2000000)).toBe(1390000);
   });
 
   it('calculates NHI roughly', () => {
