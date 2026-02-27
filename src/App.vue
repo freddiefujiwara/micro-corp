@@ -14,6 +14,9 @@
           <BaseButton @click="toggleMosaic">
             {{ isMosaic ? '金額表示' : '金額モザイク' }}
           </BaseButton>
+          <BaseButton @click="copyConditionsAndAlgorithm(params, results)">
+            条件とアルゴリズムをコピー
+          </BaseButton>
           <BaseButton @click="openShareDialog">共有する</BaseButton>
         </div>
       </div>
@@ -82,7 +85,7 @@ const router = useRouter();
 
 const { theme, toggleTheme } = useAppTheme();
 const { params, results, optimizationData } = useSimulation(route, router);
-const { isShareDialogOpen, shareStatusMessage, openShareDialog, closeShareDialog, shareCurrentResult } = useShareActions();
+const { isShareDialogOpen, shareStatusMessage, openShareDialog, closeShareDialog, shareCurrentResult, copyConditionsAndAlgorithm } = useShareActions();
 
 const isMosaic = ref(false);
 

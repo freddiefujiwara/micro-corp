@@ -1,4 +1,6 @@
 import { ref } from 'vue';
+import { buildConditionsAndAlgorithmJson } from '../domain/export.js';
+import { RATES, REMUNERATION_TABLE } from '../data/rates.js';
 
 export const useShareActions = () => {
   const isShareDialogOpen = ref(false);
@@ -36,11 +38,23 @@ export const useShareActions = () => {
     }
   };
 
+  const copyConditionsAndAlgorithm = async (params, results) => {
+    try {
+      const data = buildConditionsAndAlgorithmJson(params, results, RATES, REMUNERATION_TABLE);
+      const json = JSON.stringify(data, null, 2);
+      await navigator.clipboard.writeText(json);
+      shareStatusMessage.value = '条件とアルゴリズムをJSONでコピーしました。';
+    } catch {
+      shareStatusMessage.value = 'コピーに失敗しました。';
+    }
+  };
+
   return {
     isShareDialogOpen,
     shareStatusMessage,
     openShareDialog,
     closeShareDialog,
     shareCurrentResult,
+    copyConditionsAndAlgorithm,
   };
 };
