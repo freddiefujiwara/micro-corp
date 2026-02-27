@@ -14,9 +14,6 @@
           <BaseButton @click="toggleMosaic">
             {{ isMosaic ? '金額表示' : '金額モザイク' }}
           </BaseButton>
-          <BaseButton @click="copyConditionsAndAlgorithm(params, results)">
-            条件とアルゴリズムをコピー
-          </BaseButton>
           <BaseButton @click="openShareDialog">共有する</BaseButton>
         </div>
       </div>
@@ -54,7 +51,7 @@
 
       <div class="main-visualization">
         <div class="table-wrap">
-          <ResultDisplay :results="results" :is-mosaic="isMosaic" />
+          <ResultDisplay :results="results" :is-mosaic="isMosaic" @copy="copyConditionsAndAlgorithm(params, results)" />
         </div>
         <div class="chart-card">
           <OptimizationChart :data="optimizationData" @update:salary="updateSalary" />

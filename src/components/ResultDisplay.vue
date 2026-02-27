@@ -1,6 +1,11 @@
 <template>
   <div class="result-display">
-    <h3 class="section-title">シミュレーション結果 (年間総コスト)</h3>
+    <div class="section-header">
+      <h3 class="section-title">シミュレーション結果 (年間総コスト)</h3>
+      <button class="copy-btn" title="条件とアルゴリズムをコピー" @click="$emit('copy')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+      </button>
+    </div>
     <div class="table-wrap">
       <table>
         <thead>
@@ -41,17 +46,42 @@ defineProps({
     default: false,
   },
 });
+
+defineEmits(['copy']);
 </script>
 
 <style scoped>
 .result-display {
   margin-bottom: 24px;
 }
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
 .section-title {
   font-size: 1.1rem;
   font-weight: 700;
-  margin-bottom: 12px;
+  margin: 0;
   color: var(--text);
+}
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 4px;
+  padding: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.copy-btn:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
 }
 .table-wrap {
   overflow-x: auto;
