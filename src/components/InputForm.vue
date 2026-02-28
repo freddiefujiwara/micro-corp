@@ -2,13 +2,21 @@
   <div class="card fire-form-grid">
     <h2>入力パラメータ</h2>
     <div class="form-container">
-      <BaseNumberField
-        v-for="field in formFields"
-        :key="field.key"
-        v-model="localParams[field.key]"
-        :label="field.label"
-        :masked="isMosaic && field.sensitive"
-      />
+      <template v-for="field in formFields" :key="field.key">
+        <BaseSelectField
+          v-if="field.type === 'select'"
+          v-model="localParams[field.key]"
+          :label="field.label"
+          :options="field.options"
+          :masked="isMosaic && field.sensitive"
+        />
+        <BaseNumberField
+          v-else
+          v-model="localParams[field.key]"
+          :label="field.label"
+          :masked="isMosaic && field.sensitive"
+        />
+      </template>
     </div>
   </div>
 </template>
@@ -17,6 +25,7 @@
 import { reactive, watch } from 'vue';
 import { FORM_FIELDS } from '../constants/simulation.js';
 import BaseNumberField from './atoms/BaseNumberField.vue';
+import BaseSelectField from './atoms/BaseSelectField.vue';
 
 const props = defineProps({
   modelValue: {
