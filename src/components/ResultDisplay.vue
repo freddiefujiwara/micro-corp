@@ -1,6 +1,13 @@
 <template>
   <div class="result-display">
-    <h3 class="section-title">シミュレーション結果 (年間総コスト)</h3>
+    <div class="section-header">
+      <h3 class="section-title">シミュレーション結果 (年間総コスト)</h3>
+      <CopyButton
+        label="条件とアルゴリズムをコピー"
+        :copy-value="onCopy"
+        :disabled="isMosaic"
+      />
+    </div>
     <div class="table-wrap">
       <table>
         <thead>
@@ -30,6 +37,7 @@
 
 <script setup>
 import { formatYen } from '../utils/formatters.js';
+import CopyButton from './atoms/CopyButton.vue';
 
 defineProps({
   results: {
@@ -40,6 +48,10 @@ defineProps({
     type: Boolean,
     default: false,
   },
+  onCopy: {
+    type: Function,
+    required: true,
+  }
 });
 </script>
 
@@ -47,10 +59,16 @@ defineProps({
 .result-display {
   margin-bottom: 24px;
 }
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
 .section-title {
   font-size: 1.1rem;
   font-weight: 700;
-  margin-bottom: 12px;
+  margin: 0;
   color: var(--text);
 }
 .table-wrap {

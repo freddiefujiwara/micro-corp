@@ -9,7 +9,7 @@
         <div class="header-buttons">
           <a href="/micro-corp/" class="theme-toggle reset-link">リセット</a>
           <BaseButton @click="toggleTheme">
-            {{ theme === 'light' ? '🌙 Dark' : '☀️ Light' }}
+            {{ theme === 'light' ? '🌙 ダーク' : '☀️ ライト' }}
           </BaseButton>
           <BaseButton @click="toggleMosaic">
             {{ isMosaic ? '金額表示' : '金額モザイク' }}
@@ -51,7 +51,7 @@
 
       <div class="main-visualization">
         <div class="table-wrap">
-          <ResultDisplay :results="results" :is-mosaic="isMosaic" />
+          <ResultDisplay :results="results" :is-mosaic="isMosaic" :on-copy="() => copyConditionsAndAlgorithm(params, results)" />
         </div>
         <div class="chart-card">
           <OptimizationChart :data="optimizationData" @update:salary="updateSalary" />
@@ -82,7 +82,7 @@ const router = useRouter();
 
 const { theme, toggleTheme } = useAppTheme();
 const { params, results, optimizationData } = useSimulation(route, router);
-const { isShareDialogOpen, shareStatusMessage, openShareDialog, closeShareDialog, shareCurrentResult } = useShareActions();
+const { isShareDialogOpen, shareStatusMessage, openShareDialog, closeShareDialog, shareCurrentResult, copyConditionsAndAlgorithm } = useShareActions();
 
 const isMosaic = ref(false);
 

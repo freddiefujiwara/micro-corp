@@ -1,4 +1,6 @@
 import { ref } from 'vue';
+import { buildConditionsAndAlgorithmJson } from '../domain/export.js';
+import { RATES, REMUNERATION_TABLE } from '../data/rates.js';
 
 export const useShareActions = () => {
   const isShareDialogOpen = ref(false);
@@ -36,11 +38,17 @@ export const useShareActions = () => {
     }
   };
 
+  const copyConditionsAndAlgorithm = (params, results) => {
+    const data = buildConditionsAndAlgorithmJson(params, results, RATES, REMUNERATION_TABLE);
+    return JSON.stringify(data, null, 2);
+  };
+
   return {
     isShareDialogOpen,
     shareStatusMessage,
     openShareDialog,
     closeShareDialog,
     shareCurrentResult,
+    copyConditionsAndAlgorithm,
   };
 };
