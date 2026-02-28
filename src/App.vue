@@ -51,7 +51,7 @@
 
       <div class="main-visualization">
         <div class="table-wrap">
-          <ResultDisplay :results="results" :is-mosaic="isMosaic" @copy="copyConditionsAndAlgorithm(params, results)" />
+          <ResultDisplay :results="results" :is-mosaic="isMosaic" :on-copy="() => copyConditionsAndAlgorithm(params, results)" />
         </div>
         <div class="chart-card">
           <OptimizationChart :data="optimizationData" @update:salary="updateSalary" />

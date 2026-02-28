@@ -38,15 +38,9 @@ export const useShareActions = () => {
     }
   };
 
-  const copyConditionsAndAlgorithm = async (params, results) => {
-    try {
-      const data = buildConditionsAndAlgorithmJson(params, results, RATES, REMUNERATION_TABLE);
-      const json = JSON.stringify(data, null, 2);
-      await navigator.clipboard.writeText(json);
-      shareStatusMessage.value = '条件とアルゴリズムをJSONでコピーしました。';
-    } catch {
-      shareStatusMessage.value = 'コピーに失敗しました。';
-    }
+  const copyConditionsAndAlgorithm = (params, results) => {
+    const data = buildConditionsAndAlgorithmJson(params, results, RATES, REMUNERATION_TABLE);
+    return JSON.stringify(data, null, 2);
   };
 
   return {
