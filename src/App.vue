@@ -9,7 +9,7 @@
         <div class="header-buttons">
           <a href="/micro-corp/" class="theme-toggle reset-link">リセット</a>
           <BaseButton @click="toggleTheme">
-            {{ theme === 'light' ? '🌙 Dark' : '☀️ Light' }}
+            {{ theme === 'light' ? '🌙 ダーク' : '☀️ ライト' }}
           </BaseButton>
           <BaseButton @click="toggleMosaic">
             {{ isMosaic ? '金額表示' : '金額モザイク' }}
