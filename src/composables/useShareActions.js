@@ -21,7 +21,7 @@ export const useShareActions = () => {
     try {
       if (navigator.share) {
         await navigator.share({
-          title: 'micro-corp Simulation',
+          title: 'マイクロ法人シミュレーション',
           text: 'FIRE後の社会保険料シミュレーター',
           url: shareUrl,
         });
