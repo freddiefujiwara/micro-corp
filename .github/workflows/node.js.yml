@@ -24,8 +24,8 @@ jobs:
     - run: npm run build
     - name: Generate OGP Image from GAS JSON
       run: |
-        # URL-encoded title: FIRE シミュレータ
-        JSON_RESPONSE=$(curl -L -s "https://script.google.com/macros/s/AKfycbzbMAKxkzHlwN8SY7ygJA34xYESMNNdkGNt8vv1XMcZSksgHsUwOxCCdP-wgg6fv7M/exec?t=FIRE+%E3%82%B7%E3%83%9F%E3%83%A5%E3%83%AC%E3%83%BC%E3%82%BF")
+        # URL-encoded title: マイクロ法人シミュレーション
+        JSON_RESPONSE=$(curl -L -s "https://script.google.com/macros/s/AKfycbzbMAKxkzHlwN8SY7ygJA34xYESMNNdkGNt8vv1XMcZSksgHsUwOxCCdP-wgg6fv7M/exec?t=%E3%83%9E%E3%82%A4%E3%82%AF%E3%83%AD%E6%B3%95%E4%BA%BA%E3%82%B7%E3%83%9F%E3%83%A5%E3%83%AC%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3")
         echo $JSON_RESPONSE | jq -r '.png' | base64 -d > ./dist/ogp.png
         ls -lh ./dist/ogp.png
 

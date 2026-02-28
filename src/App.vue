@@ -2,7 +2,7 @@
   <div :data-theme="theme" class="app-container">
     <header class="header">
       <div class="header-content">
-        <h1>micro-corp Simulation</h1>
+        <h1>マイクロ法人シミュレーション</h1>
         <p class="subtitle">FIRE後の社会保険料シミュレーター</p>
       </div>
       <div class="header-actions">
@@ -60,7 +60,7 @@
     </main>
 
     <footer class="footer">
-      <p>&copy; 2024 micro-corp Simulation</p>
+      <p>&copy; 2024 マイクロ法人シミュレーション</p>
     </footer>
   </div>
 </template>
